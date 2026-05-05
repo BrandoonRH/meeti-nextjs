@@ -1,5 +1,5 @@
 import { Heading } from "@/src/shared/components";
-import { ForgotPasswordForm } from "@/src/shared/features/auth";
+import { ForgotPasswordForm } from "@/src/features/auth";
 import { generatePageTitle } from "@/src/shared/utils/Metadata";
 import { Metadata } from "next";
 import Link from "next/link";

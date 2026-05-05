@@ -1,5 +1,5 @@
 import Heading from "@/src/shared/components/typegraphy/Heading";
-import { LoginForm } from "@/src/shared/features/auth";
+import { LoginForm } from "@/src/features/auth";
 
 import { generatePageTitle } from "@/src/shared/utils/Metadata";
 import { Metadata } from "next";

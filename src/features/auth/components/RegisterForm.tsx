@@ -10,8 +10,9 @@ import {
 import {
   SignUpSchema,
   SignUpSchemaType,
-} from "@/src/shared/features/schemas/authSchema";
+} from "@/src/features/auth/schemas/authSchema";
 import { FormError } from "@/src/shared/components/forms/FormError";
+import { signUpAction } from "../actions/auth.actions";
 
 export default function RegisterForm() {
   const {
@@ -23,8 +24,8 @@ export default function RegisterForm() {
     mode: "onSubmit",
   });
 
-  const onSubmit = (data: SignUpSchemaType) => {
-    console.log(data);
+  const onSubmit = async (data: SignUpSchemaType) => {
+    await signUpAction(data);
   };
 
   return (
