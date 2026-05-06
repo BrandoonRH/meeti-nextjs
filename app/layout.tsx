@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Outfit, } from "next/font/google";
+import {Geist_Mono, Outfit } from "next/font/google";
 import "./globals.css";
-import { generatePageTitle } from "@/src/shared/utils/Metadata";
+import { Toaster } from "react-hot-toast";
 
 const outFit = Outfit({
   variable: "--font-outfit",
@@ -19,11 +19,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="es"
-      className={`${outFit.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="es" className={`${outFit.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col">
+        {children}
+
+        <Toaster position="top-right" />
+      </body>
     </html>
   );
 }
