@@ -11,9 +11,10 @@ import {
   SignUpSchema,
   SignUpSchemaType,
 } from "@/src/features/auth/schemas/authSchema";
-import { FormError } from "@/src/shared/components/forms/FormError";
+
 import { signUpAction } from "../actions/auth.actions";
 import toast from "react-hot-toast";
+import FormError from "@/src/shared/components/forms/FormError";
 
 export default function RegisterForm() {
   const {
@@ -81,7 +82,7 @@ export default function RegisterForm() {
         <FormError>{errors.password_confirmation.message}</FormError>
       )}
 
-      <FormSubmit value="Crear Cuenta" />
+      <FormSubmit value="Crear Cuenta" className="mt-4"/>
     </Form>
   );
 }

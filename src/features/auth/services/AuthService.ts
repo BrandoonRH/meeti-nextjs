@@ -1,6 +1,8 @@
 import { auth } from "@/src/lib/auth";
-import { SignUpSchemaType } from "../schemas/authSchema";
+import { SignUpSchemaType, SigInSchemaType } from "../schemas/authSchema";
 import { authRepository, IAuthRepository } from "./AuthRepository";
+import { headers } from "next/headers";
+import { APIError } from "better-auth";
 
 class AuthServices {
   constructor(private authRepository: IAuthRepository) {}
@@ -21,11 +23,65 @@ class AuthServices {
         name: credentials.name,
         email: credentials.email,
         password: credentials.password,
+        callbackURL: `/dashboard`,
       },
+      headers: await headers(),
     });
     return {
       error: "",
-      success: "Cuenta creada correctamente",
+      success:
+        "Cuenta creada correctamente, por favor verifica tu email para activar tu cuenta",
+    };
+  }
+
+  async login(
+    credentials: SigInSchemaType,
+  ): Promise<{ error: string; success: string }> {
+    const user = await this.authRepository.userExists(credentials.email);
+
+    if (!user) {
+      return {
+        error: "El email no se encuentra registrado",
+        success: "",
+      };
+    }
+
+    //check password
+
+    try {
+      await auth.api.signInEmail({
+        body: {
+          email: credentials.email,
+          password: credentials.password,
+          callbackURL: `/dashboard`,
+        },
+        headers: await headers(),
+      });
+      return {
+        error: "",
+        success: "Inicio de sesión exitoso",
+      };
+    } catch (error) {
+      if (error instanceof APIError) {
+        const messages: Record<number, string> = {
+          401: "Contraseña incorrecta. Por favor, verifica tu contraseña e intenta nuevamente.",
+          403: "Cuenta no verificada. Por favor, verifica tu cuenta antes de iniciar sesión.",
+        };
+        const errorMessage = messages[error.statusCode];
+        if (errorMessage) {
+          return {
+            error: errorMessage,
+            success: "",
+          };
+        }
+      }
+    }
+
+    //confirm account
+
+    return {
+      error: "",
+      success: "Inicio de sesión exitoso",
     };
   }
 }

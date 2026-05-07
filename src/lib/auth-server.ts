@@ -1,0 +1,18 @@
+import { headers } from "next/headers";
+import { auth } from "./auth";
+import { is } from "drizzle-orm";
+
+export async function getServerSession() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  return session;
+}
+
+export async function requiereAuth() {
+  const session = await getServerSession();
+  return {
+    session,
+    isAuthenticated: session ? true : false,
+  };
+}

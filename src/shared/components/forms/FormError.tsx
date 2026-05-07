@@ -1,7 +1,11 @@
-
-
-export const FormError = ({ children }: { children: React.ReactNode }) => {
+export default function FormError({ children }: { children?: React.ReactNode }) {
   return (
-   <p className="border-l-2 p-2 font-bold bg-red-100 border-red-600 text-red-600 text-sm">{children}</p>
-  )
+    <div className="min-h-6 mt-1">
+      {children && (
+        <p className="text-sm text-red-500 bg-red-50 border-l-4 border-red-500 px-2 py-1">
+          {children}
+        </p>
+      )}
+    </div>
+  );
 }

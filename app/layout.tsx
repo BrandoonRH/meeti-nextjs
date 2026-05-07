@@ -1,5 +1,4 @@
-import type { Metadata } from "next";
-import {Geist_Mono, Outfit } from "next/font/google";
+import { Geist_Mono, Outfit } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
@@ -20,9 +19,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${outFit.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-screen flex flex-col bg-background">
         {children}
-
         <Toaster position="top-right" />
       </body>
     </html>

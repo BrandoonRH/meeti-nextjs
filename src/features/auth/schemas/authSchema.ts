@@ -13,6 +13,17 @@ export const BaseAuthSchema = z.object({
     .min(1, { error: "La confirmación de contraseña no puede estar vacio" }),
 });
 
+export const SigInSchema = BaseAuthSchema.pick({
+  email: true,
+}).extend({
+  password: z
+    .string()
+    .trim()
+    .min(1, { error: "La contraseña no puede ir vacia" }),
+});
+
+export type SigInSchemaType = z.infer<typeof SigInSchema>;
+
 export const SignUpSchema = BaseAuthSchema.pick({
   name: true,
   email: true,
