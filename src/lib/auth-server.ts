@@ -1,6 +1,5 @@
 import { headers } from "next/headers";
 import { auth } from "./auth";
-import { is } from "drizzle-orm";
 
 export async function getServerSession() {
   const session = await auth.api.getSession({
