@@ -1,5 +1,10 @@
 import { auth } from "@/src/lib/auth";
-import { SignUpSchemaType, SigInSchemaType } from "../schemas/authSchema";
+import {
+  SignUpSchemaType,
+  SigInSchemaType,
+  ForgotPasswordInput,
+  SetPasswordInput,
+} from "../schemas/authSchema";
 import { authRepository, IAuthRepository } from "./AuthRepository";
 import { headers } from "next/headers";
 import { APIError } from "better-auth";
@@ -84,6 +89,55 @@ class AuthServices {
       success: "Inicio de sesión exitoso",
     };
   }
-}
+
+  async requestPasswordReset(input: ForgotPasswordInput) {
+    const user = await this.authRepository.userExists(input.email);
+    if (!user) {
+      return {
+        error: "No se encontro el email",
+        success: "",
+      };
+    }
+
+    await auth.api.requestPasswordReset({
+      body: {
+        email: input.email,
+      },
+    });
+    return {
+      error: "",
+      success: "Hemos enviado un email con instrucciones, reciba tu bandeja",
+    };
+  }
+
+  async setPasswordReset(
+    input: SetPasswordInput,
+    token: string,
+  ): Promise<{ error: string; success: string }> {
+    try {
+      await auth.api.resetPassword({
+        body: {
+          newPassword: input.new_password,
+          token,
+        },
+      });
+      return {
+        error: "",
+        success: "Password restablecido correctamente",
+      };
+    } catch (error) {
+      if (error instanceof APIError) {
+        return {
+          error: "Token inválido o Expirado",
+          success: "",
+        };
+      }
+      return {
+        error: "",
+        success: "",
+      };
+    }
+  }
+} //AuthServices
 
 export const authServices = new AuthServices(authRepository);

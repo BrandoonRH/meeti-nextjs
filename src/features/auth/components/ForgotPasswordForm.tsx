@@ -1,18 +1,52 @@
 "use client";
+import { useForm } from "react-hook-form";
 import {
   Form,
   FormInput,
   FormLabel,
   FormSubmit,
 } from "@/src/shared/components/forms";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  ForgotPasswordInput,
+  ForgotPasswordSchema,
+} from "../schemas/authSchema";
+import FormError from "@/src/shared/components/forms/FormError";
+import { ForgotPasswordAction } from "../actions/auth.actions";
+import toast from "react-hot-toast";
 
 export default function ForgotPasswordForm() {
-  return (
-    <Form>
-      <FormLabel htmlFor="email">E-mail</FormLabel>
-      <FormInput type="email" id="email" placeholder="Ingresa tu Email" />
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(ForgotPasswordSchema),
+    mode: "all",
+  });
 
-      <FormSubmit value="Enviar Instrucciones" />
+  const onSubmit = async (data: ForgotPasswordInput) => {
+    const { error, success } = await ForgotPasswordAction(data);
+    if (error) {
+      toast.error(error);
+    }
+    if (success) {
+      toast.success(success);
+    }
+  };
+
+  return (
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <FormLabel htmlFor="email">E-mail</FormLabel>
+      <FormInput
+        type="email"
+        id="email"
+        {...register("email")}
+        placeholder="Ingresa tu Email"
+      />
+      {errors.email && <FormError>{errors.email.message}</FormError>}
+
+      <FormSubmit value="Enviar Instrucciones" className="mt-5" />
     </Form>
   );
 }
