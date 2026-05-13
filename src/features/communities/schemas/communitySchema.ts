@@ -5,6 +5,11 @@ export const CommunitySchema = z.object({
     .string()
     .min(3, { error: "El Titulo de la Comunidad es Obligatorio" }),
   description: z.string().min(10, { error: "La Descripción es obligatoria" }),
+  image: z.url({
+    protocol: /^https?$/,
+    hostname: z.regexes.domain,
+    error: "La imagen es requerida",
+  }),
 });
 
 export type CommunityInput = z.infer<typeof CommunitySchema>;

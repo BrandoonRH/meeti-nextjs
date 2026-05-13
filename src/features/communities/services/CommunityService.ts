@@ -10,8 +10,7 @@ class CommunityService implements ICommunityService {
 
   async createCommunity(data: CommunityInput, userId: string) {
     const community = await this.communityRepository.create({
-      name: data.name,
-      description: data.description,
+      ...data,
       createdBy: userId,
     });
     return community;
