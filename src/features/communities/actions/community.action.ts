@@ -27,3 +27,27 @@ export async function createCommunityAction(input: CommunityInput) {
     success: "Comunidad Creada Correctamente",
   };
 } //createCommunityAction
+
+export async function editCommunityAction(input: CommunityInput, id: string) {
+  const data = CommunitySchema.safeParse(input);
+  if (!data.success) {
+    return {
+      error: "Error al validar datos",
+      success: "",
+    };
+  }
+
+  const { session } = await requiereAuth();
+  if (!session) {
+    return {
+      error: "Error al authenticar",
+      success: "",
+    };
+  }
+
+  await communityService.updateCommunity(data.data, id, session.user);
+  return {
+    error: "",
+    success: "Actualiazación exitosa!",
+  };
+}

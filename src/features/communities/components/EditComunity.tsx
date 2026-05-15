@@ -1,27 +1,32 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormProvider, useForm } from "react-hook-form";
+import { CommunityInput, CommunitySchema } from "../schemas/communitySchema";
 import { Form, FormSubmit } from "@/src/shared/components/forms";
 import CommunityForm from "./CommunityForm";
-import { FormProvider, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CommunityInput, CommunitySchema } from "../schemas/communitySchema";
-import { createCommunityAction } from "../actions/community.action";
+import { SelectCommunity } from "../types/communityTypes";
+import { editCommunityAction } from "../actions/community.action";
 import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
 
-export default function CreateCommunity() {
+interface Props {
+  community: SelectCommunity;
+}
+
+export default function EditComunity({ community }: Props) {
   const methods = useForm({
     resolver: zodResolver(CommunitySchema),
     mode: "all",
     defaultValues: {
-      name: "",
-      description: "",
-      image: "",
+      name: community.name,
+      description: community.description,
+      image: community.image,
     },
   });
 
   const onSubmit = async (data: CommunityInput) => {
-    const { error, success } = await createCommunityAction(data);
+    const { success, error } = await editCommunityAction(data, community.id);
     if (error) {
       toast.error(error);
     }
@@ -35,7 +40,7 @@ export default function CreateCommunity() {
     <FormProvider {...methods}>
       <Form onSubmit={methods.handleSubmit(onSubmit)}>
         <CommunityForm />
-        <FormSubmit value="Crear Comunidad" />
+        <FormSubmit value="Guardar Cambios" />
       </Form>
     </FormProvider>
   );

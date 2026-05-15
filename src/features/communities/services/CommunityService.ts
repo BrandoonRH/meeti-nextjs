@@ -6,6 +6,7 @@ import {
 } from "./CommunityRepository";
 import { CommunityPolicy } from "../policy/CommunityPolicy";
 import { MembershipPolicy } from "../policy/MembershipPolicy";
+import { notFound } from "next/navigation";
 
 export interface ICommunityService {}
 class CommunityService implements ICommunityService {
@@ -41,6 +42,41 @@ class CommunityService implements ICommunityService {
         };
       }),
     );
+  }
+
+  async getCommunity(id: string) {
+    const community = await this.communityRepository.findById(id);
+    if (!community) notFound();
+    return community;
+  }
+
+  async getCommunityDetails(id: string, user: User) {
+    const community = await this.getCommunity(id);
+    const isMember = false;
+    const isAdmin = CommunityPolicy.isAdmin(user, community);
+
+    return {
+      data: community,
+      context: {
+        isMember,
+        isAdmin,
+      },
+      permissions: {
+        canEdit: CommunityPolicy.canEdit(user, community),
+        canDelete: CommunityPolicy.canDelete(user, community),
+        canViewMembers: CommunityPolicy.canViewMembers(user, community),
+        canJoin: MembershipPolicy.canJoin(user, community, isMember),
+        canLeave: MembershipPolicy.canLeave(user, community, isMember),
+      },
+    };
+  }
+
+  async updateCommunity(data: CommunityInput, id: string, user: User) {
+    const community = await this.getCommunity(id);
+    if (!CommunityPolicy.canEdit(user, community)) {
+      throw new Error("No tienes permisos para actualizar esta comunidad");
+    }
+    await this.communityRepository.update(data, community.id);
   }
 }
 

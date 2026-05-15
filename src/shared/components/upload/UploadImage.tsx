@@ -11,7 +11,11 @@ export default function UploadImage() {
   const {
     formState: { errors },
     setValue,
+    getValues,
   } = useFormContext<CommunityInput>();
+
+  const currentImage = getValues("image") || null;
+
   return (
     <>
       <UploadDropzone
@@ -43,6 +47,18 @@ export default function UploadImage() {
           <Image
             src={uploadedImage}
             alt="Imagen Publica"
+            width={300}
+            height={200}
+          />
+        </>
+      )}
+
+      {currentImage && !uploadedImage && (
+        <>
+          <p className="text-lg font-bold">Imagen Actual</p>
+          <Image
+            src={currentImage}
+            alt="Imagen Actual"
             width={300}
             height={200}
           />
