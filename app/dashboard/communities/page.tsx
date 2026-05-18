@@ -1,3 +1,4 @@
+import DeleteCommunityModal from "@/src/features/communities/components/DeleteCommunityModal";
 import MyCommunities from "@/src/features/communities/components/MyCommunities";
 import { Heading } from "@/src/shared/components";
 import { generatePageTitle } from "@/src/shared/utils/Metadata";
@@ -26,6 +27,7 @@ export default function CommunitiesPage() {
         </Link>
       </div>
       <MyCommunities />
+      <DeleteCommunityModal />
     </>
   );
 }

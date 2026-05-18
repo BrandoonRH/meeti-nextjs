@@ -53,5 +53,10 @@ export const SetPasswordSchema = BaseAuthSchema.pick({
   message: "Las contraseñas no coinciden",
   path: ["password_confirmation"],
 });
-
 export type SetPasswordInput = z.infer<typeof SetPasswordSchema>;
+
+export const CheckPasswordSchema = z.object({
+  password: z.string().min(1, "El password no puede ir vacio"),
+});
+
+export type CheckPasswordInput = z.infer<typeof CheckPasswordSchema>;

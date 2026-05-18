@@ -3,6 +3,10 @@
 import { requiereAuth } from "@/src/lib/auth-server";
 import { CommunityInput, CommunitySchema } from "../schemas/communitySchema";
 import { communityService } from "../services/CommunityService";
+import {
+  CheckPasswordInput,
+  CheckPasswordSchema,
+} from "../../auth/schemas/authSchema";
 
 export async function createCommunityAction(input: CommunityInput) {
   const data = CommunitySchema.safeParse(input);
@@ -50,4 +54,30 @@ export async function editCommunityAction(input: CommunityInput, id: string) {
     error: "",
     success: "Actualiazación exitosa!",
   };
+}
+
+export async function deleteCommunityAction(
+  input: CheckPasswordInput,
+  id: string,
+): Promise<{ success: string; error: string }> {
+  const { session } = await requiereAuth();
+
+  if (!session) {
+    return {
+      error: "Error en authenticación",
+      success: "",
+    };
+  }
+  const data = CheckPasswordSchema.safeParse(input);
+  if (!data.success) {
+    {
+      return {
+        error: "Error validar contraseña",
+        success: "",
+      };
+    }
+  }
+
+  return  await communityService.deleteCommunity(id, input.password, session.user ); 
+
 }
