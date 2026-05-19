@@ -52,8 +52,15 @@ class CommunityService implements ICommunityService {
     return community;
   }
 
-  async getCommunityDetails(id: string, user: User) {
+  async getCommunityDetails(id: string, user?: User) {
     const community = await this.getCommunity(id);
+    if (!user) {
+      return {
+        data: community,
+        context: null,
+        permissions: null,
+      };
+    }
     const isMember = false;
     const isAdmin = CommunityPolicy.isAdmin(user, community);
 
