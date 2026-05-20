@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CommunityPermissions } from "../types/communityTypes";
+import CommunityMemberShip from "./CommunityMemberShip";
 
 interface Props {
   permissions: CommunityPermissions;
@@ -21,6 +22,13 @@ export default function CommunityActionsPanel({
           Editar Comunidad
         </Link>
       )}
+
+      {permissions.canJoin || permissions.canLeave ? (
+        <CommunityMemberShip
+        permissions={permissions}
+        communityId={communityId}
+        />
+      ) : null}
     </div>
   );
 }

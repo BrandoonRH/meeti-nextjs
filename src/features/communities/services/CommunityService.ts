@@ -9,10 +9,17 @@ import { MembershipPolicy } from "../policy/MembershipPolicy";
 import { notFound } from "next/navigation";
 import { checkPassword } from "@/src/shared/utils/auth";
 import { deleteUTFiles } from "@/src/lib/uploadthing-server";
+import {
+  IMembershipRepository,
+  membershipRepository,
+} from "./MemberShipRepository";
 
 export interface ICommunityService {}
 class CommunityService implements ICommunityService {
-  constructor(private communityRepository: ICommunityRepository) {}
+  constructor(
+    private communityRepository: ICommunityRepository,
+    private membershipRepository: IMembershipRepository,
+  ) {}
 
   async createCommunity(data: CommunityInput, userId: string) {
     const community = await this.communityRepository.create({
@@ -61,7 +68,7 @@ class CommunityService implements ICommunityService {
         permissions: null,
       };
     }
-    const isMember = false;
+    const isMember = await this.membershipRepository.isMember(id, user.id);
     const isAdmin = CommunityPolicy.isAdmin(user, community);
 
     return {
@@ -117,4 +124,7 @@ class CommunityService implements ICommunityService {
   }
 }
 
-export const communityService = new CommunityService(communityRepository);
+export const communityService = new CommunityService(
+  communityRepository,
+  membershipRepository,
+);

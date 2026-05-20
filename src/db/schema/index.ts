@@ -1,11 +1,12 @@
-import {users, sessions, accounts, verifications} from './auth-schema'
+import { users, sessions, accounts, verifications } from "./auth-schema";
 
-import { community } from './community'
+import { community, communityMembers } from "./community";
 
 export {
-    users,
-    sessions,
-    accounts,
-    verifications,
-    community
-}
+  users,
+  sessions,
+  accounts,
+  verifications,
+  community,
+  communityMembers,
+};
