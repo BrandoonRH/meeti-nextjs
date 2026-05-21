@@ -8,6 +8,7 @@ import {
   ICommunityRepository,
 } from "./CommunityRepository";
 import { MembershipPolicy } from "../policy/MembershipPolicy";
+import { CommunityPolicy } from "../policy/CommunityPolicy";
 
 class MemberShipService {
   constructor(
@@ -44,6 +45,43 @@ class MemberShipService {
         },
       };
     }
+  }
+
+  async getJoinedCommunities(user: User) {
+    const communities =
+      await this.membershipRepository.findJoinedCommunities(user);
+
+    return await Promise.all(
+      communities.map(async (community) => {
+        const isMember = true;
+        const isAdmin = CommunityPolicy.isAdmin(user, community.community);
+        return {
+          data: community.community,
+          context: {
+            isMember,
+            isAdmin,
+          },
+          permissions: {
+            canEdit: CommunityPolicy.canEdit(user, community.community),
+            canDelete: CommunityPolicy.canDelete(user, community.community),
+            canViewMembers: CommunityPolicy.canViewMembers(
+              user,
+              community.community,
+            ),
+            canJoin: MembershipPolicy.canJoin(
+              user,
+              community.community,
+              isMember,
+            ),
+            canLeave: MembershipPolicy.canLeave(
+              user,
+              community.community,
+              isMember,
+            ),
+          },
+        };
+      }),
+    );
   }
 }
 

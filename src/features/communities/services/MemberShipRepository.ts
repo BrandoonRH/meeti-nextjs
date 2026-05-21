@@ -1,11 +1,14 @@
 import { db } from "@/src/db";
 import { communityMembers } from "@/src/db/schema";
+import { User } from "better-auth";
 import { and, eq } from "drizzle-orm";
+import { JoinedCommunity } from "../types/communityTypes";
 
 export interface IMembershipRepository {
   addMember(communityId: string, userId: string): Promise<void>;
   removeMember(communityId: string, userId: string): Promise<void>;
   isMember(communityId: string, userId: string): Promise<boolean>;
+  findJoinedCommunities(user: User): Promise<JoinedCommunity[]>;
 }
 
 class MmemberShipRepository implements IMembershipRepository {
@@ -39,6 +42,18 @@ class MmemberShipRepository implements IMembershipRepository {
       )
       .limit(1);
     return !!result;
+  }
+
+  async findJoinedCommunities(user: User): Promise<JoinedCommunity[]> {
+    return await db.query.communityMembers.findMany({
+      where: {
+        userId: user.id,
+      },
+      with: {
+        community: true,
+        user: true,
+      },
+    });
   }
 }
 
