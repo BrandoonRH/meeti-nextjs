@@ -55,8 +55,10 @@ class MemberShipService {
       communities.map(async (community) => {
         const isMember = true;
         const isAdmin = CommunityPolicy.isAdmin(user, community.community);
+        const  memberCount = await this.membershipRepository.getMemberCount(community.community.id); 
         return {
           data: community.community,
+          memberCount,
           context: {
             isMember,
             isAdmin,

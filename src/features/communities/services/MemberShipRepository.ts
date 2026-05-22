@@ -1,7 +1,7 @@
 import { db } from "@/src/db";
 import { communityMembers } from "@/src/db/schema";
 import { User } from "better-auth";
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { JoinedCommunity } from "../types/communityTypes";
 
 export interface IMembershipRepository {
@@ -9,6 +9,7 @@ export interface IMembershipRepository {
   removeMember(communityId: string, userId: string): Promise<void>;
   isMember(communityId: string, userId: string): Promise<boolean>;
   findJoinedCommunities(user: User): Promise<JoinedCommunity[]>;
+  getMemberCount(communityId: string): Promise<number>;
 }
 
 class MmemberShipRepository implements IMembershipRepository {
@@ -54,6 +55,13 @@ class MmemberShipRepository implements IMembershipRepository {
         user: true,
       },
     });
+  }
+  async getMemberCount(communityId: string): Promise<number> {
+    const [result] = await db
+      .select({ total: count() })
+      .from(communityMembers)
+      .where(eq(communityMembers.communityId, communityId));
+    return result.total;
   }
 }
 

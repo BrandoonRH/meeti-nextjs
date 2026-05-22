@@ -2,7 +2,20 @@ import CommunityActionsPanel from "@/src/features/communities/components/Communi
 import { communityService } from "@/src/features/communities/services/CommunityService";
 import { getServerSession } from "@/src/lib/auth-server";
 import { Heading } from "@/src/shared/components";
+import { generatePageTitle } from "@/src/shared/utils/Metadata";
+import { Metadata } from "next";
 import Image from "next/image";
+import { pluralize } from "../../../../src/shared/utils/string";
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/communities/[id]">): Promise<Metadata> {
+  const { id } = await params;
+  const community = await communityService.getCommunity(id);
+  return {
+    title: generatePageTitle(`Comunidad ${community.name}`),
+  };
+}
 
 export default async function CommunityPage(
   props: PageProps<"/communities/[id]">,
@@ -37,6 +50,10 @@ export default async function CommunityPage(
             <Heading>{community.data.name}</Heading>
             <p className="text-gray-600 text-lg text-center">
               {community.data.description}
+            </p>
+            <p className="text-gray-600 text-sm text-center">
+              {community.memberCount}{" "}
+              {pluralize("Miembro", community.memberCount!)}
             </p>
           </div>
           <div className="bg-slate-100 p-5 rounded-2xl">{/* Admin Aquí */}</div>

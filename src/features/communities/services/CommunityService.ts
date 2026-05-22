@@ -35,8 +35,12 @@ class CommunityService implements ICommunityService {
       communities.map(async (community) => {
         const isMember = true;
         const isAdmin = CommunityPolicy.isAdmin(user, community);
+        const memberCount = await this.membershipRepository.getMemberCount(
+          community.id,
+        );
         return {
           data: community,
+          memberCount,
           context: {
             isMember,
             isAdmin,
@@ -70,9 +74,11 @@ class CommunityService implements ICommunityService {
     }
     const isMember = await this.membershipRepository.isMember(id, user.id);
     const isAdmin = CommunityPolicy.isAdmin(user, community);
+    const memberCount = await this.membershipRepository.getMemberCount(id);
 
     return {
       data: community,
+      memberCount,
       context: {
         isMember,
         isAdmin,

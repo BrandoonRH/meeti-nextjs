@@ -30,6 +30,7 @@ export type CommunityContext = {
 
 export type CommunityWithPermissions = {
   data: SelectCommunity;
+  memberCount: number; 
   context: CommunityContext;
   permissions: CommunityPermissions;
 };
