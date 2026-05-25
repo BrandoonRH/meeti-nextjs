@@ -9,11 +9,16 @@ import {
 } from "./CommunityRepository";
 import { MembershipPolicy } from "../policy/MembershipPolicy";
 import { CommunityPolicy } from "../policy/CommunityPolicy";
+import {
+  INotificationRepository,
+  notificationRepository,
+} from "../../notifications/services/NotificationRepository";
 
 class MemberShipService {
   constructor(
     private membershipRepository: IMembershipRepository,
     private communityRepository: ICommunityRepository,
+    private notificationRepository: INotificationRepository,
   ) {}
   async toogleMemberShip(communityId: string, user: User) {
     const community = await this.communityRepository.findById(communityId);
@@ -25,6 +30,13 @@ class MemberShipService {
     );
     if (MembershipPolicy.canJoin(user, community, isMember)) {
       await this.membershipRepository.addMember(communityId, user.id);
+      //notification
+      const notification = await this.notificationRepository.craete({
+        userId: community.createdBy,
+        actorName: user.name,
+        message: "Se unión a tu comunidad",
+        target: community.name,
+      });
       return {
         success: true,
         message: `Te has unido a la comunidad ${community.name}`,
@@ -55,7 +67,9 @@ class MemberShipService {
       communities.map(async (community) => {
         const isMember = true;
         const isAdmin = CommunityPolicy.isAdmin(user, community.community);
-        const  memberCount = await this.membershipRepository.getMemberCount(community.community.id); 
+        const memberCount = await this.membershipRepository.getMemberCount(
+          community.community.id,
+        );
         return {
           data: community.community,
           memberCount,
@@ -90,4 +104,5 @@ class MemberShipService {
 export const membershipService = new MemberShipService(
   membershipRepository,
   communityRepository,
+  notificationRepository,
 );

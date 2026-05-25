@@ -13,10 +13,14 @@ import DashboardNavigation from "./DashboardNavigation";
 import MobileSidebar from "./MobileSidebar";
 import NotificationsPanel from "./NotificationsPanel";
 import UserMenu from "./UserMenu";
+import { useSession } from "@/src/lib/auth-client";
 
 export default function DashboardPanel() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const {isPending} = useSession();
+
+  if(isPending) return 'Cargando...'
   return (
     <>
       <Dialog
