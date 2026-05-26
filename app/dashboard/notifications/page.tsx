@@ -19,7 +19,7 @@ export default async function NotificationsPage() {
     session.user.id,
   );
 
-  await notificationService.clearNotifications(session.user.id);
+  //await notificationService.clearNotifications(session.user.id);
 
   return (
     <>

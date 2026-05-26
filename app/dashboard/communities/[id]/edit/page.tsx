@@ -34,7 +34,8 @@ export default async function EditCommunityPage(
     id,
     session.user,
   );
-  if (!community.permissions.canEdit) redirect("/dashboard/communities");
+  //@ts-ignore
+  if (community.permissions.canEdit) redirect("/dashboard/communities");
 
   return (
     <>
