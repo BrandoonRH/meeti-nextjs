@@ -57,6 +57,14 @@ class CommunityService implements ICommunityService {
     );
   }
 
+  async getUserCommunitiesForAPI(userId: string) {
+    const communities = await this.communityRepository.findByUser(userId);
+    return communities.map((community) => ({
+      id: community.id,
+      name: community.name,
+    }));
+  }
+
   async getCommunity(id: string) {
     const community = await this.communityRepository.findById(id);
     if (!community) notFound();
