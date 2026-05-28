@@ -6,6 +6,11 @@ import {
 } from "@/src/shared/components/forms";
 import CommunityFormField from "./CommunityFormField";
 import CategoryFormField from "./CategoryFormField";
+import dynamic from "next/dynamic";
+
+//componente dinamico desabilita ssr para que cargue solo en el cliente; 
+//?https://nextjs.org/docs/app/guides/lazy-loading#nextdynamic
+const DinamycLocationPicker = dynamic(() => import('./LocationPicker'), {ssr: false}); 
 
 export default function MeetiForm() {
   return (
@@ -54,6 +59,7 @@ export default function MeetiForm() {
           type="text"
           placeholder="Nombre Lugar evento"
         />
+        <DinamycLocationPicker/>
       </fieldset>
     </>
   );
