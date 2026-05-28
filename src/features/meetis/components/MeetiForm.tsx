@@ -5,6 +5,7 @@ import {
   FormToggle,
 } from "@/src/shared/components/forms";
 import CommunityFormField from "./CommunityFormField";
+import CategoryFormField from "./CategoryFormField";
 
 export default function MeetiForm() {
   return (
@@ -18,6 +19,7 @@ export default function MeetiForm() {
         <FormLabel htmlFor="details">Detalles Meeti</FormLabel>
         <FormTextArea id="details" placeholder="Descripción Meeti" />
 
+        <CategoryFormField />
         <CommunityFormField />
 
         <FormLabel htmlFor="availableSeats">Cupo</FormLabel>

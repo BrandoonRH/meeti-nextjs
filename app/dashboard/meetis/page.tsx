@@ -1,14 +1,18 @@
+import { requiereAuth } from "@/src/lib/auth-server";
 import { Heading } from "@/src/shared/components";
 import { generatePageTitle } from "@/src/shared/utils/Metadata";
 import { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const title = "Administra tus Meeties";
 
 export const metadata: Metadata = {
   title: generatePageTitle(title),
 };
-export default function MeetisPage() {
+export default async function MeetisPage() {
+  const { session } = await requiereAuth();
+  if (!session) redirect("/auth/login");
   return (
     <>
       <Heading>{title}</Heading>

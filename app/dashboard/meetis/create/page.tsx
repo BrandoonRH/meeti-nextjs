@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: generatePageTitle(title),
 };
 export default function CreateMeetisPage() {
+  
   return (
     <>
       <Heading>{title}</Heading>
