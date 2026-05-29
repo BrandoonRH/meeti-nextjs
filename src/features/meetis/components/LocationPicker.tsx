@@ -4,6 +4,9 @@ import type { Marker as TMarker, LatLngTuple } from "leaflet";
 import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { FormInput, FormLabel } from "@/src/shared/components/forms";
+import { useFormContext } from "react-hook-form";
+import { GeoCodeSchema, MeetiInput } from "../schemas/meetiSchema";
+import FormError from "@/src/shared/components/forms/FormError";
 
 function CenterMap({ coordinates }: { coordinates: LatLngTuple }) {
   const map = useMap();
@@ -21,8 +24,16 @@ const markerIcon = new Icon({
 });
 
 export default function LocationPicker() {
-  const lat = 25.776311;
-  const lng = -80.3121477;
+  const {
+    register,
+    formState: { errors },
+    getValues,
+    setValue,
+    clearErrors
+  } = useFormContext<MeetiInput>();
+
+  const lat = getValues("location.lat");
+  const lng = getValues("location.lng");
 
   const [coordinates, setCoordinates] = useState<LatLngTuple>([lat, lng]);
 
@@ -34,6 +45,13 @@ export default function LocationPicker() {
   const reverseGeocoding = async (positionTuple: LatLngTuple) => {
     const url = GEOCODE_URL + `${positionTuple[1]},${positionTuple[0]}`;
     const data = await (await fetch(url)).json();
+    const location = GeoCodeSchema.parse(data.address);
+    setValue("location.address", location.LongLabel);
+    setValue('location.city', location.City);
+    setValue("location.country", location.CountryName); 
+    setValue("location.lat", location.InputY); 
+    setValue("location.lng", location.InputX); 
+    clearErrors('location.address'); 
   };
 
   const eventHandlers = useMemo(
@@ -83,7 +101,12 @@ export default function LocationPicker() {
         placeholder="Dirección Evento"
         className="disabled:opacity-50 "
         disabled
+        {...register("location.address")}
       />
+
+      {"location" in errors && errors.location?.address && (
+        <FormError>{errors.location.address.message}</FormError>
+      )}
     </>
   );
 }

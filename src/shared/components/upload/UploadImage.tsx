@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useFormContext } from "react-hook-form";
 import { CommunityInput } from "@/src/features/communities/schemas/communitySchema";
 import FormError from "../forms/FormError";
+import { MeetiInput } from "@/src/features/meetis/schemas/meetiSchema";
 
 export default function UploadImage() {
   const [uploadedImage, setUploadedImage] = useState("");
@@ -12,7 +13,7 @@ export default function UploadImage() {
     formState: { errors },
     setValue,
     getValues,
-  } = useFormContext<CommunityInput>();
+  } = useFormContext<CommunityInput | MeetiInput>();
 
   const currentImage = getValues("image") || null;
 
