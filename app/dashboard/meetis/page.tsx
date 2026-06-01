@@ -1,7 +1,12 @@
+import MeetiDropdownMenu from "@/src/features/meetis/components/MeetiDropdownMenu";
+import { meetiService } from "@/src/features/meetis/services/MeetiService";
 import { requiereAuth } from "@/src/lib/auth-server";
 import { Heading } from "@/src/shared/components";
+import { formatMeetiDate } from "@/src/shared/utils/date";
 import { generatePageTitle } from "@/src/shared/utils/Metadata";
+import { pluralize } from "@/src/shared/utils/string";
 import { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -13,6 +18,8 @@ export const metadata: Metadata = {
 export default async function MeetisPage() {
   const { session } = await requiereAuth();
   if (!session) redirect("/auth/login");
+
+  const meetis = await meetiService.getUpComingMeetisByUser(session.user);
   return (
     <>
       <Heading>{title}</Heading>
@@ -23,6 +30,54 @@ export default async function MeetisPage() {
       >
         Crear Meeti
       </Link>
+
+      {meetis.length ? (
+        <ul
+          role="list"
+          className="divide-y divide-gray-100 dark:divide-white/5 mt-10 shadow-lg p-10"
+        >
+          {meetis.map((meeti) => {
+            const { id, title, image, date, time } = meeti.data;
+            return (
+              <li key={id} className="flex justify-between gap-x-6 py-5">
+                <div className="flex items-center min-w-0 gap-x-4">
+                  <Image
+                    src={image}
+                    alt={`Imagen de Meeti: ${title}`}
+                    width={400}
+                    height={250}
+                    className="w-40"
+                    priority
+                  />
+                  <div className="min-w-0 flex-auto">
+                    <a className="hover:underline font-bold text-lg">{title}</a>
+                    <p className="text-gray-600 text-sm">
+                      {formatMeetiDate(date, time)}
+                    </p>
+                    <p className="text-gray-600 text-sm">
+                      {meeti.attendanceCount}{" "}
+                      {pluralize("Asistente", meeti.attendanceCount)}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex shrink-0 items-center gap-x-6">{meeti.context.isAdmin && (
+                  <MeetiDropdownMenu meeti={meeti.data}/>
+                )}</div>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="text-center mt-10 text-lg">
+          No Hay Meetis Aún.
+          <Link
+            href={"/dashboard/meetis/create"}
+            className="text-orange-500 font-bold"
+          >
+            Comienza Creando Uno{" "}
+          </Link>
+        </p>
+      )}
     </>
   );
 }

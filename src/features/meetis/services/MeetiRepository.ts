@@ -1,9 +1,11 @@
 import { db } from "@/src/db";
-import { InserMeeti } from "../types/meeti.types";
+import { InserMeeti, SelectMeeti } from "../types/meeti.types";
 import { meeti, meetiLocations } from "@/src/db/schema";
+import { format } from "date-fns";
 
 export interface IMeetiRepository {
   insert(data: InserMeeti): Promise<void>;
+  findUpcomingByUserId(userId: string): Promise<SelectMeeti[]>;
 }
 class MeetiRepository implements IMeetiRepository {
   async insert(data: InserMeeti): Promise<void> {
@@ -14,6 +16,17 @@ class MeetiRepository implements IMeetiRepository {
         ...data.location,
       });
     }
+  }
+  async findUpcomingByUserId(userId: string): Promise<SelectMeeti[]> {
+    const today = format(new Date(), "yyyy-MM-dd");
+    return await db.query.meeti.findMany({
+      where: {
+        AND: [{ createdBy: { eq: userId } }, { date: { gte: today } }],
+      },
+      orderBy: {
+        date: "asc",
+      },
+    });
   }
 }
 
