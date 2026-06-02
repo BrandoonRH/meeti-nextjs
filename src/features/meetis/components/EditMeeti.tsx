@@ -1,0 +1,39 @@
+import { Form, FormSubmit } from "@/src/shared/components/forms";
+import React from "react";
+import MeetiForm from "./MeetiForm";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MeetiInput, MeetiSchema } from "../schemas/meetiSchema";
+import { SelectMeeti } from "../types/meeti.types";
+import { editMeetiAction } from "../actions/meeti.action";
+
+interface EditMeetiProps {
+  meeti: SelectMeeti;
+}
+
+export default function EditMeeti({ meeti }: EditMeetiProps) {
+  const methods = useForm({
+    resolver: zodResolver(MeetiSchema),
+    mode: "all",
+    defaultValues: meeti.virtual
+      ? {
+          ...meeti,
+          virtual: true,
+        }
+      : {
+          ...meeti,
+          location: meeti.location!,
+        },
+  });
+  const onSubmit = async (data: MeetiInput) => {
+        await editMeetiAction(meeti.id, data);
+  };
+  return (
+    <FormProvider {...methods}>
+      <Form onSubmit={methods.handleSubmit(onSubmit)}>
+        <MeetiForm />
+        <FormSubmit value={"Editar"} />
+      </Form>
+    </FormProvider>
+  );
+}

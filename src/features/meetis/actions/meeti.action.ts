@@ -26,3 +26,27 @@ export async function createMeetiAction(input: MeetiInput) {
     success: "Meeti creado correctamente",
   };
 }
+
+export async function editMeetiAction(meetiId: string, input: MeetiInput) {
+  const { session } = await requiereAuth();
+  if (!session) {
+    return {
+      error: "No Autenticado",
+      success: "",
+    };
+  }
+
+  const data = MeetiSchema.safeParse(input);
+  if (!data.success) {
+    return {
+      error: "Error al validar los datos",
+      success: "",
+    };
+  }
+
+  await meetiService.updateMeeti(meetiId, data.data, session.user);
+  return {
+    error: "",
+    success: "Meeti editado correctamente",
+  };
+}

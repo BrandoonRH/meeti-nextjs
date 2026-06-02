@@ -44,6 +44,42 @@ class MeetiService /* implements IMeetiService */ {
       }),
     );
   }
+
+  async getMeetiById(meetiId: string) {
+    const meeti = await this.meetiRepository.findById(meetiId);
+    if (!meeti) throw new Error("Meeti no encontrado");
+    return meeti;
+  }
+
+  async getMeetiWithPermissions(meetiId: string, user: User) {
+    const meeti = await this.getMeetiById(meetiId);
+    return {
+      data: meeti,
+      context: {
+        isAdmin: MeetiPolicy.isAdmin(user, meeti),
+      },
+      permissions: {
+        canViewAttendes: MeetiPolicy.canViewAttendes(user, meeti),
+        canEdit: MeetiPolicy.canEdit(user, meeti),
+        canDelete: MeetiPolicy.canDelete(user, meeti),
+      },
+    };
+  }
+
+  async updateMeeti(meetiId: string, data: MeetiInput, user: User) {
+    const community = await this.communityRepository.findById(data.communityId);
+    if (!community || !CommunityPolicy.isAdmin(user, community)) {
+      throw new Error("No tienes Permisos");
+    }
+    const meeti = await this.getMeetiWithPermissions(meetiId, user);
+    if (!meeti.permissions.canEdit) {
+      throw new Error("No tienes Permisos");
+    }
+    await this.meetiRepository.update(
+      { ...data, createdBy: user.id },
+      meeti.data.id,
+    );
+  }
 }
 
 export const meetiService = new MeetiService(

@@ -29,11 +29,11 @@ export default function LocationPicker() {
     formState: { errors },
     getValues,
     setValue,
-    clearErrors
+    clearErrors,
   } = useFormContext<MeetiInput>();
 
-  const lat = getValues("location.lat");
-  const lng = getValues("location.lng");
+  const lat = getValues("location.lat") ?? 20.6515342;
+  const lng = getValues("location.lng") ?? -103.4054225;
 
   const [coordinates, setCoordinates] = useState<LatLngTuple>([lat, lng]);
 
@@ -47,11 +47,11 @@ export default function LocationPicker() {
     const data = await (await fetch(url)).json();
     const location = GeoCodeSchema.parse(data.address);
     setValue("location.address", location.LongLabel);
-    setValue('location.city', location.City);
-    setValue("location.country", location.CountryName); 
-    setValue("location.lat", location.InputY); 
-    setValue("location.lng", location.InputX); 
-    clearErrors('location.address'); 
+    setValue("location.city", location.City);
+    setValue("location.country", location.CountryName);
+    setValue("location.lat", location.InputY);
+    setValue("location.lng", location.InputX);
+    clearErrors("location.address");
   };
 
   const eventHandlers = useMemo(
