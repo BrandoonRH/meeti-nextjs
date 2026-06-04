@@ -1,4 +1,7 @@
 import { category, meeti, meetiLocations } from "@/src/db/schema";
+import { SelectCommunity } from "../../communities/types/communityTypes";
+import { User } from "better-auth";
+
 
 export type SelectCategory = typeof category.$inferSelect;
 
@@ -15,3 +18,11 @@ export type InserMeeti = InsertBasicMeeti & {
 export type SelectMeeti = SelectBasicMeeti & {
   location?: SelectMeetiLocation | null;
 };
+
+
+export type FullMeeti = SelectBasicMeeti & {
+  location?: SelectMeetiLocation | null;
+  category: SelectCategory;
+  community: SelectCommunity; 
+  admin: User
+}

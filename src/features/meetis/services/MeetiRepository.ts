@@ -1,5 +1,6 @@
 import { db } from "@/src/db";
 import {
+  FullMeeti,
   InserMeeti,
   InsertMeetiLocation,
   SelectMeeti,
@@ -12,6 +13,7 @@ export interface IMeetiRepository {
   insert(data: InserMeeti): Promise<void>;
   findUpcomingByUserId(userId: string): Promise<SelectMeeti[]>;
   findById(id: string): Promise<SelectMeeti | null>;
+  findFullById(id: string): Promise<FullMeeti | null>;
   update(data: InserMeeti, meetiId: string): Promise<void>;
 }
 class MeetiRepository implements IMeetiRepository {
@@ -74,6 +76,21 @@ class MeetiRepository implements IMeetiRepository {
         });
       }
     }
+  }
+  async findFullById(id: string): Promise<FullMeeti | null> {
+    const result = await db.query.meeti.findFirst({
+      where: {
+        id,
+      },
+      with: {
+        location: true,
+        category: true,
+        community: true,
+        admin: true,
+      },
+    });
+
+    return result ?? null;
   }
 }
 

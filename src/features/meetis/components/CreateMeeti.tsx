@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
 
 export default function CreateMeeti() {
-  const methods = useForm<MeetiInput>({
+  const methods = useForm({
     resolver: zodResolver(MeetiSchema),
     mode: "all",
     defaultValues: {
@@ -36,7 +36,8 @@ export default function CreateMeeti() {
   const { isPending } = useSession();
   if (isPending) return "Cargando...";
 
-  const onSubmit = async (data: MeetiInput) => {
+  const onSubmitCreate = async (data: MeetiInput) => {
+    console.log(data);
     const { error, success } = await createMeetiAction(data);
     if (error) {
       toast.error(error);
@@ -49,9 +50,9 @@ export default function CreateMeeti() {
 
   return (
     <FormProvider {...methods}>
-      <Form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
+      <Form onSubmit={methods.handleSubmit(onSubmitCreate)} noValidate>
         <MeetiForm />
-        <FormSubmit />
+        <FormSubmit value="Crear Meeti" />
       </Form>
     </FormProvider>
   );

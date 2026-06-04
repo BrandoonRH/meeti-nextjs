@@ -51,6 +51,16 @@ class MeetiService /* implements IMeetiService */ {
     return meeti;
   }
 
+  async getMeetiWithDetails(meetiId: string, user?: User) {
+    const meeti = await this.meetiRepository.findFullById(meetiId);
+    if (!meeti) throw new Error("Meeti no encontrado");
+    return {
+      data: meeti,
+      context: {},
+      permissions: {},
+    };
+  }
+
   async getMeetiWithPermissions(meetiId: string, user: User) {
     const meeti = await this.getMeetiById(meetiId);
     return {

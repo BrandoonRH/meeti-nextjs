@@ -48,7 +48,7 @@ export default function LocationPicker() {
     const location = GeoCodeSchema.parse(data.address);
     setValue("location.address", location.LongLabel);
     setValue("location.city", location.City);
-    setValue("location.country", location.CountryName);
+    setValue("location.country", location.CntryName);
     setValue("location.lat", location.InputY);
     setValue("location.lng", location.InputX);
     clearErrors("location.address");

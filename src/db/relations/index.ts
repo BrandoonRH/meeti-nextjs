@@ -33,14 +33,29 @@ export const relations = defineRelations(schema, (r) => ({
     user: r.one.users({
       from: r.communityMembers.userId,
       to: r.users.id,
-      optional: false
+      optional: false,
     }),
   },
   meeti: {
     location: r.one.meetiLocations({
       from: r.meeti.id,
       to: r.meetiLocations.meetiId,
-      optional: true
-    })
-  }
+      optional: true,
+    }),
+    category: r.one.category({
+      from: r.meeti.categoryId,
+      to: r.category.id,
+      optional: false,
+    }),
+    community: r.one.community({
+      from: r.meeti.communityId,
+      to: r.community.id,
+      optional: false,
+    }),
+    admin: r.one.users({
+      from: r.meeti.createdBy,
+      to: r.users.id,
+      optional: false,
+    }),
+  },
 }));

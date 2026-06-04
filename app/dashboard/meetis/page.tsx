@@ -50,7 +50,13 @@ export default async function MeetisPage() {
                     priority
                   />
                   <div className="min-w-0 flex-auto">
-                    <a className="hover:underline font-bold text-lg">{title}</a>
+                    <Link
+                      href={`/meetis/${id}`}
+                      className="hover:underline font-Link text-lg"
+                      target="_blank"
+                    >
+                      {title}
+                    </Link>
                     <p className="text-gray-600 text-sm">
                       {formatMeetiDate(date, time)}
                     </p>
@@ -60,9 +66,11 @@ export default async function MeetisPage() {
                     </p>
                   </div>
                 </div>
-                <div className="flex shrink-0 items-center gap-x-6">{meeti.context.isAdmin && (
-                  <MeetiDropdownMenu meeti={meeti.data}/>
-                )}</div>
+                <div className="flex shrink-0 items-center gap-x-6">
+                  {meeti.context.isAdmin && (
+                    <MeetiDropdownMenu meeti={meeti.data} />
+                  )}
+                </div>
               </li>
             );
           })}
