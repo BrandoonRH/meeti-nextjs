@@ -1,3 +1,4 @@
+"use client";
 import {
   FormInput,
   FormLabel,
@@ -25,6 +26,8 @@ export default function MeetiForm() {
     formState: { errors },
     setValue,
   } = useFormContext<MeetiInput>();
+
+  console.log(errors);
 
   const isVirtual = watch("virtual");
 

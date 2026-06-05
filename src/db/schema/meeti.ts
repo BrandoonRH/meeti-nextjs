@@ -8,6 +8,7 @@ import {
   date,
   integer,
   doublePrecision,
+  timestamp,
 } from "drizzle-orm/pg-core";
 import { community } from "./community";
 import { users } from "./auth-schema";
@@ -41,4 +42,14 @@ export const meetiLocations = pgTable("meeti_locations", {
   country: varchar("country", { length: 100 }).notNull(),
   lat: doublePrecision("latitude").notNull(),
   lng: doublePrecision("longitude").notNull(),
+});
+
+export const meetiAttendees = pgTable("meeti_attendees", {
+  meetiId: uuid("meeti_id")
+    .notNull()
+    .references(() => meeti.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });

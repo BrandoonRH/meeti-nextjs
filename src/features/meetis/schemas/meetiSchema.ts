@@ -17,7 +17,7 @@ const BaseSchema = z.object({
     error: "La imagen es obligatoria",
   }),
   communityId: z.uuid({ message: "Elige Una Comunidad" }),
- /*  availableSeats: z.preprocess(
+  /*  availableSeats: z.preprocess(
     Number,
     z.number().min(1, { error: "El Cupo debe ser Mayor a 0" }),
   ), */
@@ -40,8 +40,8 @@ const MeetiLocationSchema = z.object({
     .max(90, { error: "Ubicación no válida" }),
   lng: z
     .number({ error: "Ubicación no válida" })
-    .min(-90, { error: "Ubicación no válida" })
-    .max(90, { error: "Ubicación no válida" }),
+    .min(-180, { message: "Ubicación no válida" })
+    .max(180, { message: "Ubicación no válida" }),
 });
 
 const VirtualMeetiSchema = BaseSchema.extend({

@@ -9,6 +9,9 @@ import Location from "@/src/features/meetis/components/MeetiLocation";
 import { DynamicMeetiLocation } from "@/src/features/meetis/components/DynamicMeetiLocation";
 import { displayDate } from "@/src/shared/utils/date";
 import OrganizerCard from "@/src/features/meetis/components/OrganizerCard";
+import { requiereAuth } from "@/src/lib/auth-server";
+import { redirect } from "next/navigation";
+import AttendanceToggleButton from "@/src/features/meetis/components/AttendanceToggleButton";
 
 export async function generateMetadata({
   params,
@@ -40,9 +43,15 @@ export async function generateMetadata({
   };
 }
 export default async function MeetiPage(props: PageProps<"/meetis/[id]">) {
-  const { id } = await props.params;
-  const meeti = await meetiService.getMeetiWithDetails(id);
+  const { session } = await requiereAuth();
+  /*   if (!session)
+    redirect("/auth/login?message=Debes iniciar sesión para ver el meeti"); */
 
+  const { id } = await props.params;
+  const meeti = await meetiService.getMeetiWithDetails(id, session?.user);
+
+  if (meeti.context.isPastMeeti)
+    throw new Error("El meeti ya no esta disponible");
   const { virtual: isVirtual, location } = meeti.data;
 
   return (
@@ -59,17 +68,24 @@ export default async function MeetiPage(props: PageProps<"/meetis/[id]">) {
             </Link>
           </p>
           <p className=" text-gray-600">
-            Comunidad:
+            Comunidad:{" "}
             <Link
               className="font-black"
-              href={`/communities/${meeti.data.category.id}`}
+              href={`/communities/${meeti.data.community.id}`}
             >
-              {meeti.data.category.name}
+              {meeti.data.community.name}
             </Link>
           </p>
         </div>
       </nav>
-
+      {meeti.permissions && !meeti.context.isAdmin && (
+        <div className="max-w-7xl mx-auto my-10 flex justify-end">
+          <AttendanceToggleButton
+            meetiId={meeti.data.id}
+            permissions={meeti.permissions}
+          />
+        </div>
+      )}
       <Heading className="text-center mt-10 ">{meeti.data.title}</Heading>
 
       <main className="max-w-7xl mx-auto grid grid-cols-1 gap-5 lg:grid-cols-3 p-5 lg:px-0 mt-10">

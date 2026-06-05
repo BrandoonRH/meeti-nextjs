@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "leaflet";
 import type { Marker as TMarker, LatLngTuple } from "leaflet";

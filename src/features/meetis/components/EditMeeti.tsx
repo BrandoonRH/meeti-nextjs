@@ -1,5 +1,5 @@
+"use client";
 import { Form, FormSubmit } from "@/src/shared/components/forms";
-import React from "react";
 import MeetiForm from "./MeetiForm";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

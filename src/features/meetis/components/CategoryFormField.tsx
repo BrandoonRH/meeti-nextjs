@@ -1,3 +1,5 @@
+"use client";
+
 import { FormLabel, FormSelect } from "@/src/shared/components/forms";
 import { Suspense, use } from "react";
 import { SelectCategory } from "../types/meeti.types";

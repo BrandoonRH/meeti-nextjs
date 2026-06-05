@@ -7,12 +7,18 @@ import {
 } from "../../communities/services/CommunityRepository";
 import { CommunityPolicy } from "../../communities/policy/CommunityPolicy";
 import { MeetiPolicy } from "../policies/MeetiPolicy";
+import {
+  IMeetiAttendeesRepository,
+  meetiAttendeesRepository,
+} from "./MeetiAttendeesRepository";
+import { MeetiAttendeePolicy } from "../policies/MeetiAttendeePolicy";
 
 interface IMeetiService {}
 class MeetiService /* implements IMeetiService */ {
   constructor(
     private readonly meetiRepository: IMeetiRepository,
     private readonly communityRepository: ICommunityRepository,
+    private readonly meetiAttendeesRepository: IMeetiAttendeesRepository,
   ) {}
 
   async createMeeti(data: MeetiInput, user: User) {
@@ -29,9 +35,11 @@ class MeetiService /* implements IMeetiService */ {
     );
     return await Promise.all(
       upcomingMeetis.map(async (meeti) => {
+        const attendanceCount =
+          await this.meetiAttendeesRepository.findAttendeesCount(meeti.id);
         return {
           data: meeti,
-          attendanceCount: 0,
+          attendanceCount,
           context: {
             isAdmin: MeetiPolicy.isAdmin(user, meeti),
           },
@@ -54,10 +62,26 @@ class MeetiService /* implements IMeetiService */ {
   async getMeetiWithDetails(meetiId: string, user?: User) {
     const meeti = await this.meetiRepository.findFullById(meetiId);
     if (!meeti) throw new Error("Meeti no encontrado");
+    if (!user) throw new Error("Usuario...");
+
+    const isAttending = await this.meetiAttendeesRepository.isUserAttending(
+      meeti.id,
+      user.id,
+    );
+    const isAdmin = MeetiPolicy.isAdmin(user, meeti);
+    const isPastMeeti = MeetiPolicy.isPastMeeti(meeti);
+
     return {
       data: meeti,
-      context: {},
-      permissions: {},
+      context: {
+        isAdmin,
+        isPastMeeti,
+        isAttending,
+      },
+      permissions: {
+        canConfirm: MeetiAttendeePolicy.canConfirm(user, meeti, isAttending),
+        canCancel: MeetiAttendeePolicy.canCancel(user, meeti, isAttending),
+      },
     };
   }
 
@@ -95,4 +119,5 @@ class MeetiService /* implements IMeetiService */ {
 export const meetiService = new MeetiService(
   meetiRepository,
   communityRepository,
+  meetiAttendeesRepository,
 );

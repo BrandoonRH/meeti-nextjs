@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import { useState } from "react";
 import { UploadDropzone } from "../../utils/uploadthing";
 import Image from "next/image";
 import { useFormContext } from "react-hook-form";
