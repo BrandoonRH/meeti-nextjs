@@ -17,10 +17,16 @@ export default function AttendanceToggleButton({
   /* const [canCancel, setCanCancel] = useState(permissions.canCancel); */
 
   const handleClick = async () => {
-    const {error, success, newPermissions} = await toggleAttendance(meetiId); 
-    if(success){
-        toast.success(success); 
-        setCanConfirm(newPermissions.canConfirm)
+    const { error, success, newPermissions } = await toggleAttendance(
+      meetiId,
+      canConfirm,
+    );
+    if (error) {
+      toast.error(error);
+    }
+    if (success) {
+      toast.success(success);
+      setCanConfirm(newPermissions.canConfirm);
     }
   };
 

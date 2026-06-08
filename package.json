@@ -18,6 +18,8 @@
     "@types/leaflet": "^1.9.21",
     "@types/nodemailer": "^8.0.0",
     "@uploadthing/react": "^7.3.3",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.38.0",
     "better-auth": "^1.6.9",
     "clsx": "^2.1.1",
     "date-fns": "^4.3.0",

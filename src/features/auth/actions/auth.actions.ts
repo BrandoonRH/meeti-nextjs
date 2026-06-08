@@ -1,4 +1,5 @@
 "use server";
+import { getClientIp } from "@/src/shared/utils/ip";
 import {
   SigInSchema,
   SignUpSchema,
@@ -10,10 +11,21 @@ import {
   SetPasswordSchema,
 } from "../schemas/authSchema";
 import { authServices } from "../services/AuthService";
+import { ratelimit } from "@/src/lib/limiter";
+import { getMinutesDiffFromNow } from "@/src/shared/utils/date";
 
 export async function signUpAction(
   input: SignUpSchemaType,
 ): Promise<{ error: string; success: string }> {
+  const ip = await getClientIp();
+  const { success, reset } = await ratelimit.limit(ip);
+  if (!success) {
+    return {
+      error: `Limite Alcanzado. Intenta de Nuevo en ${getMinutesDiffFromNow(reset)} Minutos`,
+      success: "",
+    };
+  }
+
   const validation = SignUpSchema.safeParse(input);
 
   if (!validation.success) {
@@ -28,6 +40,14 @@ export async function signUpAction(
 export async function signInAction(
   input: SigInSchemaType,
 ): Promise<{ error: string; success: string }> {
+  const ip = await getClientIp();
+  const { success, reset } = await ratelimit.limit(ip);
+  if (!success) {
+    return {
+      error: `Limite Alcanzado. Intenta de Nuevo en ${getMinutesDiffFromNow(reset)} Minutos`,
+      success: "",
+    };
+  }
   const validation = SigInSchema.safeParse(input);
   if (!validation.success) {
     return {
@@ -42,6 +62,15 @@ export async function signInAction(
 export async function ForgotPasswordAction(
   input: ForgotPasswordInput,
 ): Promise<{ error: string; success: string }> {
+  const ip = await getClientIp();
+  const { success, reset } = await ratelimit.limit(ip);
+  if (!success) {
+    return {
+      error: `Limite Alcanzado. Intenta de Nuevo en ${getMinutesDiffFromNow(reset)} Minutos`,
+      success: "",
+    };
+  }
+
   const data = ForgotPasswordSchema.safeParse(input);
   if (!data.success) {
     return {
@@ -56,6 +85,15 @@ export async function setPasswordAction(
   input: SetPasswordInput,
   token: string,
 ): Promise<{ error: string; success: string }> {
+  const ip = await getClientIp();
+  const { success, reset } = await ratelimit.limit(ip);
+  if (!success) {
+    return {
+      error: `Limite Alcanzado. Intenta de Nuevo en ${getMinutesDiffFromNow(reset)} Minutos`,
+      success: "",
+    };
+  }
+
   const data = SetPasswordSchema.safeParse(input);
   if (!data.success) {
     return {
