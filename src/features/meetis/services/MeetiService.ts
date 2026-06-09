@@ -62,14 +62,26 @@ class MeetiService /* implements IMeetiService */ {
   async getMeetiWithDetails(meetiId: string, user?: User) {
     const meeti = await this.meetiRepository.findFullById(meetiId);
     if (!meeti) throw new Error("Meeti no encontrado");
-    if (!user) throw new Error("Usuario...");
+
+    const isPastMeeti = MeetiPolicy.isPastMeeti(meeti);
+
+    if (!user) {
+      return {
+        data: meeti,
+        context: {
+          isAdmin: false,
+          isPastMeeti,
+          isAttending: false,
+        },
+        permissions: null
+      };
+    }
 
     const isAttending = await this.meetiAttendeesRepository.isUserAttending(
       meeti.id,
       user.id,
     );
     const isAdmin = MeetiPolicy.isAdmin(user, meeti);
-    const isPastMeeti = MeetiPolicy.isPastMeeti(meeti);
 
     return {
       data: meeti,
@@ -113,6 +125,20 @@ class MeetiService /* implements IMeetiService */ {
       { ...data, createdBy: user.id },
       meeti.data.id,
     );
+  }
+
+  async getMeetiAttendees(meetiId: string, user: User) {
+    const meeti = await this.getMeetiById(meetiId);
+    if (!MeetiPolicy.canViewAttendes(user, meeti)) {
+      throw new Error("No Autorizado");
+    }
+
+    const attendees =
+      await this.meetiAttendeesRepository.findAttendeesByMeetiId(meeti.id);
+    return {
+      meeti,
+      attendees,
+    };
   }
 }
 

@@ -1,16 +1,14 @@
-import { meetiService } from "@/src/features/meetis/services/MeetiService";
-import { generatePageTitle } from "@/src/shared/utils/Metadata";
 import { Metadata } from "next";
 import Link from "next/link";
-import { classNames } from "../../../../src/shared/utils/ui";
-import { Heading } from "@/src/shared/components";
 import Image from "next/image";
-import Location from "@/src/features/meetis/components/MeetiLocation";
+import { meetiService } from "@/src/features/meetis/services/MeetiService";
+import { generatePageTitle } from "@/src/shared/utils/Metadata";
+import { Heading } from "@/src/shared/components";
 import { DynamicMeetiLocation } from "@/src/features/meetis/components/DynamicMeetiLocation";
 import { displayDate } from "@/src/shared/utils/date";
 import OrganizerCard from "@/src/features/meetis/components/OrganizerCard";
 import { requiereAuth } from "@/src/lib/auth-server";
-import { redirect } from "next/navigation";
+
 import AttendanceToggleButton from "@/src/features/meetis/components/AttendanceToggleButton";
 
 export async function generateMetadata({
@@ -78,14 +76,17 @@ export default async function MeetiPage(props: PageProps<"/meetis/[id]">) {
           </p>
         </div>
       </nav>
-      {meeti.permissions && !meeti.context.isAdmin && (
-        <div className="max-w-7xl mx-auto my-10 flex justify-end">
+      <div className="max-w-7xl mx-auto my-10 flex justify-end">
+        {!session?.user && (
+          <p>Confirma tu Asistencia, obten una cuenta. Es Gratis</p>
+        )}
+        {meeti.permissions && !meeti.context.isAdmin && (
           <AttendanceToggleButton
             meetiId={meeti.data.id}
             permissions={meeti.permissions}
           />
-        </div>
-      )}
+        )}
+      </div>
       <Heading className="text-center mt-10 ">{meeti.data.title}</Heading>
 
       <main className="max-w-7xl mx-auto grid grid-cols-1 gap-5 lg:grid-cols-3 p-5 lg:px-0 mt-10">

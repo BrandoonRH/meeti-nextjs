@@ -58,4 +58,11 @@ export const relations = defineRelations(schema, (r) => ({
       optional: false,
     }),
   },
+  meetiAttendees: {
+    user: r.one.users({
+      from: r.meetiAttendees.userId,
+      to: r.users.id,
+      optional: false
+    }),
+  },
 }));
