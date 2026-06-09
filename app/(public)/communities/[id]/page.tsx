@@ -6,6 +6,7 @@ import { generatePageTitle } from "@/src/shared/utils/Metadata";
 import { Metadata } from "next";
 import Image from "next/image";
 import { pluralize } from "../../../../src/shared/utils/string";
+import UpComingCommunityMeetis from "@/src/features/communities/components/UpComingCommunityMeetis";
 
 export async function generateMetadata({
   params,
@@ -59,9 +60,7 @@ export default async function CommunityPage(
           <div className="bg-slate-100 p-5 rounded-2xl">{/* Admin Aquí */}</div>
         </div>
       </main>
-      <div className="grid grid-cols-1 lg:grid-cols-3 items-start gap-10 max-w-7xl mx-auto mt-10 space-y-5">
-        {/* Próximos Meetis Aquí */}
-      </div>
+      <UpComingCommunityMeetis communityId={id}/>
     </>
   );
 }

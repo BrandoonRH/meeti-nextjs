@@ -15,6 +15,7 @@ export interface IMeetiRepository {
   findById(id: string): Promise<SelectMeeti | null>;
   findFullById(id: string): Promise<FullMeeti | null>;
   update(data: InserMeeti, meetiId: string): Promise<void>;
+  findUpComingByCommunity(communityId: string): Promise<SelectMeeti[]>;
 }
 class MeetiRepository implements IMeetiRepository {
   async insert(data: InserMeeti): Promise<void> {
@@ -91,6 +92,23 @@ class MeetiRepository implements IMeetiRepository {
     });
 
     return result ?? null;
+  }
+
+  async findUpComingByCommunity(communityId: string): Promise<SelectMeeti[]> {
+    const today = format(new Date(), "yyyy-MM-dd");
+
+    return await db.query.meeti.findMany({
+      where: {
+        communityId,
+        date: {
+          gte: today,
+        },
+      },
+      limit: 3,
+      orderBy: {
+        date: "asc",
+      },
+    });
   }
 }
 

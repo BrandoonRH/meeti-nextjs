@@ -13,12 +13,14 @@ import {
   IMembershipRepository,
   membershipRepository,
 } from "./MemberShipRepository";
+import { IMeetiRepository, meetiRepository } from "../../meetis/services/MeetiRepository";
 
 export interface ICommunityService {}
 class CommunityService implements ICommunityService {
   constructor(
     private communityRepository: ICommunityRepository,
     private membershipRepository: IMembershipRepository,
+    private meetyRepository: IMeetiRepository,
   ) {}
 
   async createCommunity(data: CommunityInput, userId: string) {
@@ -136,9 +138,14 @@ class CommunityService implements ICommunityService {
       success: "Comunidad Eliminada Correctamenmte",
     };
   }
+
+  async getUpComingMeetisByCommunity(communityId: string){
+    return await this.meetyRepository.findUpComingByCommunity(communityId); 
+  }
 }
 
 export const communityService = new CommunityService(
   communityRepository,
   membershipRepository,
+  meetiRepository
 );
