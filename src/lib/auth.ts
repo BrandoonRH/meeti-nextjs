@@ -32,6 +32,14 @@ export const auth = betterAuth({
     sendOnSignIn: true,
     autoSignInAfterVerification: true,
   },
+  user: {
+    additionalFields: {
+      bio: {
+        type: "string",
+        required: false,
+      },
+    },
+  },
   plugins: [nextCookies()],
 });
 

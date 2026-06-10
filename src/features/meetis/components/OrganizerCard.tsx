@@ -1,6 +1,7 @@
 import { Heading } from "@/src/shared/components";
 import Image from "next/image";
 import { User } from "../../auth/types";
+import Link from "next/link";
 
 interface Props {
   organizer: User;
@@ -25,10 +26,13 @@ export default function OrganizerCard({ organizer }: Props) {
         </div>
         <div className="col-span-3 space-y-3">
           <p className="text-lg font-black">{name}</p>
-          <p className="text-gray-500 text-sm"></p>
-          <a className="font-bold text-sm bg-pink-600 p-2  text-white block w-full text-center">
+          <p className="text-gray-500 text-sm">{email}</p>
+          <Link
+            href={"/dashboard"}
+            className="font-bold text-sm bg-pink-600 p-2  text-white block w-full text-center"
+          >
             Ver Perfil
-          </a>
+          </Link>
         </div>
       </div>
     </>

@@ -7,6 +7,7 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { pluralize } from "../../../../src/shared/utils/string";
 import UpComingCommunityMeetis from "@/src/features/communities/components/UpComingCommunityMeetis";
+import OrganizerCard from "@/src/features/meetis/components/OrganizerCard";
 
 export async function generateMetadata({
   params,
@@ -57,10 +58,12 @@ export default async function CommunityPage(
               {pluralize("Miembro", community.memberCount!)}
             </p>
           </div>
-          <div className="bg-slate-100 p-5 rounded-2xl">{/* Admin Aquí */}</div>
+          <div className="bg-slate-100 p-5 rounded-2xl">
+            <OrganizerCard organizer={community.data.admin} />
+          </div>
         </div>
       </main>
-      <UpComingCommunityMeetis communityId={id}/>
+      <UpComingCommunityMeetis communityId={id} />
     </>
   );
 }

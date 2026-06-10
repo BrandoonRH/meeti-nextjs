@@ -13,7 +13,14 @@ import {
   IMembershipRepository,
   membershipRepository,
 } from "./MemberShipRepository";
-import { IMeetiRepository, meetiRepository } from "../../meetis/services/MeetiRepository";
+import {
+  IMeetiRepository,
+  meetiRepository,
+} from "../../meetis/services/MeetiRepository";
+import {
+  IProfileRepositopry,
+  profileRepository,
+} from "../../profile/services/ProfileRepository";
 
 export interface ICommunityService {}
 class CommunityService implements ICommunityService {
@@ -21,6 +28,7 @@ class CommunityService implements ICommunityService {
     private communityRepository: ICommunityRepository,
     private membershipRepository: IMembershipRepository,
     private meetyRepository: IMeetiRepository,
+    private profileRepository: IProfileRepositopry,
   ) {}
 
   async createCommunity(data: CommunityInput, userId: string) {
@@ -75,19 +83,22 @@ class CommunityService implements ICommunityService {
 
   async getCommunityDetails(id: string, user?: User) {
     const community = await this.getCommunity(id);
+    const memberCount = await this.membershipRepository.getMemberCount(id);
+    const admin = await this.profileRepository.findById(community.createdBy);
+
     if (!user) {
       return {
-        data: community,
+        data: { ...community, admin },
+        memberCount,
         context: null,
         permissions: null,
       };
     }
     const isMember = await this.membershipRepository.isMember(id, user.id);
     const isAdmin = CommunityPolicy.isAdmin(user, community);
-    const memberCount = await this.membershipRepository.getMemberCount(id);
 
     return {
-      data: community,
+      data: { ...community, admin },
       memberCount,
       context: {
         isMember,
@@ -139,13 +150,14 @@ class CommunityService implements ICommunityService {
     };
   }
 
-  async getUpComingMeetisByCommunity(communityId: string){
-    return await this.meetyRepository.findUpComingByCommunity(communityId); 
+  async getUpComingMeetisByCommunity(communityId: string) {
+    return await this.meetyRepository.findUpComingByCommunity(communityId);
   }
 }
 
 export const communityService = new CommunityService(
   communityRepository,
   membershipRepository,
-  meetiRepository
+  meetiRepository,
+  profileRepository,
 );
