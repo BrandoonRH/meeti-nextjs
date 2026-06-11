@@ -6,6 +6,10 @@ import { headers } from "next/headers";
 class ProfileService {
   constructor(private readonly profileRepository: IProfileRepositopry) {}
 
+  async getProfileDetails(profileId: string){
+   return  await this.profileRepository.findFullProfileById(profileId); 
+  }
+
   async updateProfile(data: ProfileInput) {
     const { bio, image, name } = data;
     await auth.api.updateUser({

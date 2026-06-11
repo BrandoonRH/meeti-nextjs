@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function OrganizerCard({ organizer }: Props) {
-  const { name, email, image } = organizer;
+  const { name, email, image, id } = organizer;
   return (
     <>
       <Heading level={2} className="text-center">
@@ -28,7 +28,7 @@ export default function OrganizerCard({ organizer }: Props) {
           <p className="text-lg font-black">{name}</p>
           <p className="text-gray-500 text-sm">{email}</p>
           <Link
-            href={"/dashboard"}
+            href={`/profiles/${id}`}
             className="font-bold text-sm bg-pink-600 p-2  text-white block w-full text-center"
           >
             Ver Perfil

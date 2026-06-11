@@ -11,6 +11,16 @@ export const relations = defineRelations(schema, (r) => ({
       from: r.users.id,
       to: r.accounts.userId,
     }),
+    communities: r.many.community({
+      from: r.users.id,
+      to: r.community.createdBy,
+      /*  optional: false */
+    }),
+    meeties: r.many.meeti({
+      from: r.users.id,
+      to: r.meeti.createdBy,
+      /*  optional: false */
+    }),
   },
   sessions: {
     user: r.one.users({
@@ -62,7 +72,7 @@ export const relations = defineRelations(schema, (r) => ({
     user: r.one.users({
       from: r.meetiAttendees.userId,
       to: r.users.id,
-      optional: false
+      optional: false,
     }),
   },
 }));

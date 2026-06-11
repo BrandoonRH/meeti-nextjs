@@ -1,3 +1,4 @@
+import { cache } from "react";
 import CommunityActionsPanel from "@/src/features/communities/components/CommunityActionsPanel";
 import { communityService } from "@/src/features/communities/services/CommunityService";
 import { getServerSession } from "@/src/lib/auth-server";
@@ -9,13 +10,18 @@ import { pluralize } from "../../../../src/shared/utils/string";
 import UpComingCommunityMeetis from "@/src/features/communities/components/UpComingCommunityMeetis";
 import OrganizerCard from "@/src/features/meetis/components/OrganizerCard";
 
+const getCommunityCache = cache(async (id: string) => {
+  const session = await getServerSession();
+  return await communityService.getCommunityDetails(id, session?.user);
+});
+
 export async function generateMetadata({
   params,
 }: PageProps<"/communities/[id]">): Promise<Metadata> {
   const { id } = await params;
-  const community = await communityService.getCommunity(id);
+  const community = await getCommunityCache(id);
   return {
-    title: generatePageTitle(`Comunidad ${community.name}`),
+    title: generatePageTitle(`Comunidad ${community.data.name}`),
   };
 }
 
@@ -23,11 +29,8 @@ export default async function CommunityPage(
   props: PageProps<"/communities/[id]">,
 ) {
   const { id } = await props.params;
-  const session = await getServerSession();
-  const community = await communityService.getCommunityDetails(
-    id,
-    session?.user,
-  );
+  const community = await getCommunityCache(id);
+
   return (
     <>
       <main className="max-w-7xl mx-auto space-y-5 p-10 lg:p-0 mt-10">
