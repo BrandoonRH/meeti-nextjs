@@ -140,6 +140,10 @@ class MeetiService /* implements IMeetiService */ {
       attendees,
     };
   }
+
+  async getUpcomming(){
+    return await this.meetiRepository.findUpcomming(); 
+  }
 }
 
 export const meetiService = new MeetiService(

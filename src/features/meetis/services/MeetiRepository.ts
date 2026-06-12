@@ -12,6 +12,7 @@ import { eq } from "drizzle-orm";
 export interface IMeetiRepository {
   insert(data: InserMeeti): Promise<void>;
   findUpcomingByUserId(userId: string): Promise<SelectMeeti[]>;
+  findUpcomming(): Promise<SelectMeeti[]>;
   findById(id: string): Promise<SelectMeeti | null>;
   findFullById(id: string): Promise<FullMeeti | null>;
   update(data: InserMeeti, meetiId: string): Promise<void>;
@@ -108,6 +109,25 @@ class MeetiRepository implements IMeetiRepository {
       orderBy: {
         date: "asc",
       },
+    });
+  }
+  async findUpcomming(): Promise<SelectMeeti[]> {
+    const now = new Date();
+    const nowDate = now.toISOString().slice(0, 10);
+    const nowTime = now.toTimeString().slice(0, 5);
+
+    return await db.query.meeti.findMany({
+      where: {
+        OR: [
+          { date: { gte: nowDate } },
+          { AND: [{ date: { eq: nowTime } }, { time: { gte: nowTime } }] },
+        ],
+      },
+      orderBy: {
+        date: "asc",
+        time: "asc",
+      },
+      limit: 3,
     });
   }
 }
