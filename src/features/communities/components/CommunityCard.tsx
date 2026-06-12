@@ -4,7 +4,9 @@ import Link from "next/link";
 import { Heading } from "@/src/shared/components";
 
 interface Props {
-  community: SelectCommunity;
+  community: Omit<SelectCommunity, "createdAt" | "createdBy"> & {
+    membersCount: string;
+  };
 }
 export default function CommunityCard({ community }: Props) {
   return (
@@ -20,10 +22,12 @@ export default function CommunityCard({ community }: Props) {
         />
       </div>
       <div className="p-5 space-y-5">
-        <Heading level={3} className="text-bold text-2xl">
+        <Heading level={3} className="text-bold text-2xl line-clamp-1">
           {community.name}
         </Heading>
-        <p className="line-clamp-3">{community.description}</p>
+        <p className="line-clamp-1">{community.description}</p>
+        <p className="text-gray-200 text-sm">Cantidad de Miembros: {community.membersCount}</p>
+
         <Link
           href={`/communities/${community.id}`}
           className="bg-orange-500 hover:bg-orange-600 transition-colors text-xl text-white py-3 px-10 mt-10 font-bold block text-center"

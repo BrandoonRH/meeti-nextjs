@@ -120,7 +120,7 @@ class MeetiRepository implements IMeetiRepository {
       where: {
         OR: [
           { date: { gte: nowDate } },
-          { AND: [{ date: { eq: nowTime } }, { time: { gte: nowTime } }] },
+          { AND: [{ date: { eq: nowDate } }, { time: { gte: nowTime } }] },
         ],
       },
       orderBy: {

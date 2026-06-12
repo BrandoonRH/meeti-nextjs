@@ -153,6 +153,10 @@ class CommunityService implements ICommunityService {
   async getUpComingMeetisByCommunity(communityId: string) {
     return await this.meetyRepository.findUpComingByCommunity(communityId);
   }
+
+  async getFeaturedCommunities(){
+    return this.communityRepository.findFeatured(); 
+  }
 }
 
 export const communityService = new CommunityService(
