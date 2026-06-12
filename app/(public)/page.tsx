@@ -3,6 +3,7 @@ import { generatePageTitle } from "@/src/shared/utils/Metadata";
 import { Metadata } from "next";
 import UpCommingMeetis from "../../src/features/meetis/components/UpCommingMeetis";
 import FeatureCommunities from "@/src/features/communities/components/FeatureCommunities";
+import CategoryList from "@/src/features/meetis/components/CategoryList";
 
 export const metadata: Metadata = {
   title: generatePageTitle("Home"),
@@ -14,6 +15,7 @@ export default async function Home() {
       <Hero />
       <UpCommingMeetis/>
       <FeatureCommunities/>
+      <CategoryList/>
     </>
   );
 }

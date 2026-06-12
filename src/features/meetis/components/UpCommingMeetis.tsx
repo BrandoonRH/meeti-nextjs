@@ -5,7 +5,7 @@ import MeetiCard from "./MeetiCard";
 export default async function UpCommingMeetis() {
   const meetis = await meetiService.getUpcomming();
   return (
-    <main className="max-w-7xl mx-auto mt-10 space-y-5 px-5 lg:px-0">
+    <main className="max-w-7xl mx-auto py-10 space-y-5 px-5 lg:px-0">
       <Heading level={2} className="text-center">
         Próximos Meetis
       </Heading>
