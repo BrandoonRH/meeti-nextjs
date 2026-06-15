@@ -18,6 +18,7 @@ export interface IMeetiRepository {
   update(data: InserMeeti, meetiId: string): Promise<void>;
   findUpComingByCommunity(communityId: string): Promise<SelectMeeti[]>;
   findByCategory(categoryId: string): Promise<SelectMeeti[]>;
+  delete(meetiId: string): Promise<void>;
 }
 class MeetiRepository implements IMeetiRepository {
   async insert(data: InserMeeti): Promise<void> {
@@ -147,6 +148,9 @@ class MeetiRepository implements IMeetiRepository {
       },
       limit: 10,
     });
+  }
+  async delete(meetiId: string): Promise<void> {
+    await db.delete(meeti).where(eq(meeti.id, meetiId));
   }
 }
 

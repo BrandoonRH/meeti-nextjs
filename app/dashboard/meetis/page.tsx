@@ -1,3 +1,4 @@
+import DeleteMeetiDialog from "@/src/features/meetis/components/DeleteMeetiDialog";
 import MeetiDropdownMenu from "@/src/features/meetis/components/MeetiDropdownMenu";
 import { meetiService } from "@/src/features/meetis/services/MeetiService";
 import { requiereAuth } from "@/src/lib/auth-server";
@@ -86,6 +87,7 @@ export default async function MeetisPage() {
           </Link>
         </p>
       )}
+      <DeleteMeetiDialog/>
     </>
   );
 }
