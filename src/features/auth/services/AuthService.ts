@@ -4,10 +4,12 @@ import {
   SigInSchemaType,
   ForgotPasswordInput,
   SetPasswordInput,
+  UpdatePasswordInput,
 } from "../schemas/authSchema";
 import { authRepository, IAuthRepository } from "./AuthRepository";
 import { headers } from "next/headers";
 import { APIError } from "better-auth";
+import { checkPassword } from "@/src/shared/utils/auth";
 
 class AuthServices {
   constructor(private authRepository: IAuthRepository) {}
@@ -137,6 +139,29 @@ class AuthServices {
         success: "",
       };
     }
+  }
+
+  async changePassword(input: UpdatePasswordInput) {
+    const { new_password, current_password, revoke_other_sessions } = input;
+    const isValid = await checkPassword(current_password);
+    if (!isValid) {
+      return {
+        error: "Password actual incorrecto",
+        success: "",
+      };
+    }
+    await auth.api.changePassword({
+      body: {
+        currentPassword: current_password,
+        newPassword: new_password,
+        /* revokeOtherSessions: revoke_other_sessions, */
+      },
+      headers: await headers(),
+    });
+    return {
+      error: "",
+      success: "Password actualizado correctamente",
+    };
   }
 } //AuthServices
 

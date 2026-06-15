@@ -15,6 +15,7 @@ export const BaseAuthSchema = z.object({
     .string()
     .trim()
     .min(8, { error: "La contraseña debe tener al menos 8 caracteres" }),
+    current_password: z.string().trim().min(1, { error: "El Password no puede ir vacio" }),
 });
 
 export const SigInSchema = BaseAuthSchema.pick({
@@ -60,3 +61,15 @@ export const CheckPasswordSchema = z.object({
 });
 
 export type CheckPasswordInput = z.infer<typeof CheckPasswordSchema>;
+
+export const UpdatePasswordSchema = BaseAuthSchema.pick({
+  current_password: true,
+  new_password: true,
+  password_confirmation: true
+}).extend({
+  revoke_other_sessions: z.boolean(),
+}).refine(data => data.new_password === data.password_confirmation, {
+  error: 'Los passwords no son iguales',
+  path: ["password_confirmation"]
+});
+export type UpdatePasswordInput = z.infer<typeof UpdatePasswordSchema>; 

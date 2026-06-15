@@ -9,10 +9,13 @@ import {
   ForgotPasswordSchema,
   SetPasswordInput,
   SetPasswordSchema,
+  UpdatePasswordInput,
+  UpdatePasswordSchema,
 } from "../schemas/authSchema";
 import { authServices } from "../services/AuthService";
 import { ratelimit } from "@/src/lib/limiter";
 import { getMinutesDiffFromNow } from "@/src/shared/utils/date";
+import { requiereAuth } from "@/src/lib/auth-server";
 
 export async function signUpAction(
   input: SignUpSchemaType,
@@ -103,4 +106,22 @@ export async function setPasswordAction(
   }
 
   return await authServices.setPasswordReset(data.data, token);
+}
+
+export async function updatePasswordAction(input: UpdatePasswordInput) {
+  const { session } = await requiereAuth();
+  if (!session) {
+    return {
+      error: "No Autenticado",
+      success: "",
+    };
+  }
+  const { success, data } = UpdatePasswordSchema.safeParse(input);
+  if (!success) {
+    return {
+      error: "Error en la validación",
+      success: "",
+    };
+  }
+  return await authServices.changePassword(data);
 }
