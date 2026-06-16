@@ -158,10 +158,27 @@ class AuthServices {
       },
       headers: await headers(),
     });
+    if(revoke_other_sessions){
+      await auth.api.revokeOtherSessions({
+        headers: await headers(),
+      })
+    }
     return {
       error: "",
       success: "Password actualizado correctamente",
     };
+  }
+
+  async getSessions(){
+    return auth.api.listSessions({
+      headers: await headers()
+    }); 
+  }
+
+  async getSession(){
+    return auth.api.getSession({
+      headers: await headers()
+    }); 
   }
 } //AuthServices
 

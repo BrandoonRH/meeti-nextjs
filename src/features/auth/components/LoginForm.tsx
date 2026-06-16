@@ -18,7 +18,7 @@ export default function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitted },
     reset,
   } = useForm({
     resolver: zodResolver(SigInSchema),
@@ -33,8 +33,8 @@ export default function LoginForm() {
     }
     if (success) {
       toast.success(success);
-      reset(); 
-      redirect('/dashboard')
+      reset();
+      redirect("/dashboard");
     }
   };
 
@@ -62,7 +62,11 @@ export default function LoginForm() {
       {errors.password && (
         <FormError>{errors.password.message?.toString()}</FormError>
       )}
-      <FormSubmit value="Iniciar Sesión" className="mt-4" />
+      <FormSubmit
+        value={isSubmitted ? "Ingresando..." : "Iniciar Sesión"}
+        className="mt-4"
+        disabled={isSubmitted}
+      />
     </Form>
   );
 }

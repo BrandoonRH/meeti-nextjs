@@ -4,9 +4,7 @@ import Link from "next/link";
 import { Heading } from "@/src/shared/components";
 
 interface Props {
-  community: Omit<SelectCommunity, "createdAt" | "createdBy"> & {
-    membersCount: string;
-  };
+  community: any;
 }
 export default function CommunityCard({ community }: Props) {
   return (
@@ -26,7 +24,9 @@ export default function CommunityCard({ community }: Props) {
           {community.name}
         </Heading>
         <p className="line-clamp-1">{community.description}</p>
-        <p className="text-gray-200 text-sm">Cantidad de Miembros: {community.membersCount}</p>
+        <p className="text-gray-200 text-sm">
+          Cantidad de Miembros: {community.membersCount}
+        </p>
 
         <Link
           href={`/communities/${community.id}`}
