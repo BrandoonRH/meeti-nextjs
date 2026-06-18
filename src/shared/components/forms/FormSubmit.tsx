@@ -6,7 +6,7 @@ export default function FormSubmit(props: Props) {
   return (
     <input
       type="submit"
-      className={`bg-pink-600 hover:bg-pink-700 transition-all w-full  p-2 uppercase font-black text-white cursor-pointer ${className || ""}`}
+      className={`bg-pink-600 disabled:opacity-50 hover:bg-pink-700 transition-all w-full  p-2 uppercase font-black text-white cursor-pointer ${className || ""}`}
       value={value}
     />
   );
