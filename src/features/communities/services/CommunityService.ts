@@ -1,4 +1,4 @@
-import { success, User } from "better-auth";
+import { User } from "better-auth";
 import { CommunityInput } from "../schemas/communitySchema";
 import {
   communityRepository,
@@ -156,6 +156,10 @@ class CommunityService implements ICommunityService {
 
   async getFeaturedCommunities(){
     return this.communityRepository.findFeatured(); 
+  }
+
+  async searchCommunityByTopic(query: string){
+    return await this.communityRepository.search(query); 
   }
 }
 

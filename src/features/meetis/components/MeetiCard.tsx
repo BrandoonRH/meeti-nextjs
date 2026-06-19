@@ -1,4 +1,4 @@
-import { Heading } from "@/src/shared/components";
+import Heading from "@/src/shared/components/typegraphy/Heading";
 import { SelectMeeti } from "../types/meeti.types";
 import Image from "next/image";
 import { displayDate } from "@/src/shared/utils/date";

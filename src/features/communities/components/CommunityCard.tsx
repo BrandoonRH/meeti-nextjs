@@ -1,12 +1,13 @@
+import Heading  from "@/src/shared/components/typegraphy/Heading";
 import Image from "next/image";
-import { SelectCommunity } from "../types/communityTypes";
 import Link from "next/link";
-import { Heading } from "@/src/shared/components";
+
 
 interface Props {
   community: any;
+  target?: boolean;
 }
-export default function CommunityCard({ community }: Props) {
+export default function CommunityCard({ community, target }: Props) {
   return (
     <div className="border border-slate-200 bg-white hover:shadow-lg transition-shadow">
       <div className="overflow-hidden">
@@ -29,6 +30,7 @@ export default function CommunityCard({ community }: Props) {
         </p>
 
         <Link
+          target={target ? "_blank" : ""}
           href={`/communities/${community.id}`}
           className="bg-orange-500 hover:bg-orange-600 transition-colors text-xl text-white py-3 px-10 mt-10 font-bold block text-center"
         >

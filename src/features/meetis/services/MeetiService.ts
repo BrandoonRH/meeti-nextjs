@@ -162,6 +162,10 @@ class MeetiService /* implements IMeetiService */ {
       success: "Meeti Elimando Correctamente",
     };
   }
+
+  async getMeetisByTopic(query: string) {
+    return await this.meetiRepository.searchByTopic(query)
+  }
 }
 
 export const meetiService = new MeetiService(

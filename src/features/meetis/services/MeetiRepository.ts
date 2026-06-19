@@ -19,6 +19,7 @@ export interface IMeetiRepository {
   findUpComingByCommunity(communityId: string): Promise<SelectMeeti[]>;
   findByCategory(categoryId: string): Promise<SelectMeeti[]>;
   delete(meetiId: string): Promise<void>;
+  searchByTopic(query: string) : Promise<SelectMeeti[]>; 
 }
 class MeetiRepository implements IMeetiRepository {
   async insert(data: InserMeeti): Promise<void> {
@@ -151,6 +152,18 @@ class MeetiRepository implements IMeetiRepository {
   }
   async delete(meetiId: string): Promise<void> {
     await db.delete(meeti).where(eq(meeti.id, meetiId));
+  }
+
+  async searchByTopic(query: string): Promise<SelectMeeti[]> {
+    return await db.query.meeti.findMany({
+      where: {
+        OR: [
+          {title: {ilike: `%${query}%`}},
+          {details: {ilike: `%${query}%`}}
+
+        ]
+      }
+    })
   }
 }
 
