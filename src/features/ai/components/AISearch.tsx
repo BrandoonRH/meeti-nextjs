@@ -73,15 +73,29 @@ export default function AISearch() {
 
             //meetis
 
-            if (part.type === "tool-getMeetisBySubject") {
+            if (
+              part.type === "tool-getMeetisBySubject" ||
+              part.type === "tool-getVirtualMeetis" ||
+              part.type === "tool-getInPersonMeetis"
+            ) {
               if (part.state !== "output-available") return null;
               const { meetis, message } = part.output;
 
               if (!meetis.length) return <p key={key}>{message}</p>;
 
+              const typeText =
+                part.type === "tool-getVirtualMeetis"
+                  ? { singular: "Meeti Virtual", plural: "Meetis Virtuales" }
+                  : part.type === "tool-getInPersonMeetis"
+                    ? {
+                        singular: "Meeti en esta ubicación",
+                        plural: "Meetis en esta ubicación",
+                      }
+                    : { singular: "Meeti", plural: "Meetis" };
+
               return (
                 <div key={key} className="space-y-4">
-                  <p className="text-gray-700 font-medium">
+                  {/*  <p className="text-gray-700 font-medium">
                     Encontré{" "}
                     {meetis.length === 1
                       ? "Esté Meeti "
@@ -90,7 +104,32 @@ export default function AISearch() {
                     <span className="text-orange-600 font-bold">
                       {part.input.query}
                     </span>
+                  </p> */}
+                  <p className="text-gray-700 font-medium">
+                    Encontré{" "}
+                    {meetis.length === 1 ? (
+                      <>
+                        este{" "}
+                        <span className="text-orange-500 font-bold">
+                          {typeText.singular}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-orange-500 font-bold">
+                          {meetis.length}
+                        </span>{" "}
+                        {typeText.plural}
+                      </>
+                    )}
+                    {part.input.query && (
+                      <>
+                        {" "}
+                        sobre: <span>{part.input.query}</span>
+                      </>
+                    )}
                   </p>
+
                   <div className="grid grid-cols-2 lg:grid-cols-2 gap-5 mt-10">
                     {meetis.map((m) => (
                       <MeetiCard key={m.id} meeti={m} />

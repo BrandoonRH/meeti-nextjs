@@ -164,7 +164,23 @@ class MeetiService /* implements IMeetiService */ {
   }
 
   async getMeetisByTopic(query: string) {
-    return await this.meetiRepository.searchByTopic(query)
+    return await this.meetiRepository.searchByTopic(query);
+  }
+  async getVirtualMeetis(query?: string) {
+    return await this.meetiRepository.searchVirtual(query);
+  }
+  async getInPerson(
+    city?: string,
+    country?: string,
+    query?: string,
+    today?: boolean,
+  ) {
+    return await this.meetiRepository.searchByLocation(
+      city,
+      country,
+      query,
+      today,
+    );
   }
 }
 

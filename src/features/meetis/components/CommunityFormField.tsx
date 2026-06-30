@@ -4,9 +4,9 @@ import { useFormContext } from "react-hook-form";
 import { MeetiInput } from "../schemas/meetiSchema";
 import FormError from "@/src/shared/components/forms/FormError";
 
-const communitiesPromise = fetch("/api/user/communities").then((res) =>
-  res.json(),
-);
+const communitiesPromise = fetch(
+  `${process.env.APP_URL}/api/user/communities`,
+).then((res) => res.json());
 
 function CommunityOpciones() {
   const {

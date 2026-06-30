@@ -7,7 +7,7 @@ import {
 } from "../types/meeti.types";
 import { meeti, meetiLocations } from "@/src/db/schema";
 import { format } from "date-fns";
-import { eq } from "drizzle-orm";
+import { eq, ilike } from "drizzle-orm";
 
 export interface IMeetiRepository {
   insert(data: InserMeeti): Promise<void>;
@@ -19,7 +19,14 @@ export interface IMeetiRepository {
   findUpComingByCommunity(communityId: string): Promise<SelectMeeti[]>;
   findByCategory(categoryId: string): Promise<SelectMeeti[]>;
   delete(meetiId: string): Promise<void>;
-  searchByTopic(query: string) : Promise<SelectMeeti[]>; 
+  searchByTopic(query: string): Promise<SelectMeeti[]>;
+  searchVirtual(query?: string): Promise<SelectMeeti[]>;
+  searchByLocation(
+    city?: string,
+    country?: string,
+    query?: string,
+    today?: boolean,
+  ): Promise<SelectMeeti[]>;
 }
 class MeetiRepository implements IMeetiRepository {
   async insert(data: InserMeeti): Promise<void> {
@@ -158,12 +165,95 @@ class MeetiRepository implements IMeetiRepository {
     return await db.query.meeti.findMany({
       where: {
         OR: [
-          {title: {ilike: `%${query}%`}},
-          {details: {ilike: `%${query}%`}}
+          { title: { ilike: `%${query}%` } },
+          { details: { ilike: `%${query}%` } },
+        ],
+      },
+    });
+  }
+  async searchVirtual(query?: string): Promise<SelectMeeti[]> {
+    const normalizedQuery = query?.toLocaleLowerCase().trim();
+    const isToday = normalizedQuery?.includes("hoy");
 
-        ]
-      }
-    })
+    let cleanQuery = normalizedQuery;
+    if (isToday) {
+      cleanQuery = cleanQuery?.replace("hoy", "").trim();
+    }
+    const today = format(new Date(), "yyyy-MM-dd");
+    return await db.query.meeti.findMany({
+      where: {
+        virtual: { eq: true },
+        ...(isToday && {
+          date: { eq: today },
+        }),
+        ...(cleanQuery &&
+          cleanQuery.length > 0 && {
+            OR: [
+              { title: { ilike: `%${cleanQuery}%` } },
+              { details: { ilike: `%${cleanQuery}%` } },
+            ],
+          }),
+      },
+      limit: 5,
+      orderBy: {
+        date: "asc",
+      },
+    });
+  }
+
+  async searchByLocation(
+    city?: string,
+    country?: string,
+    query?: string,
+    today?: boolean,
+  ): Promise<SelectMeeti[]> {
+    const normalizeQuery = query?.toLocaleLowerCase().trim();
+    const isTodatInQuery = normalizeQuery?.includes("hoy");
+    const isToday = today || isTodatInQuery;
+    let cleanQuery = normalizeQuery;
+    if (isToday) {
+      cleanQuery = cleanQuery?.replace("hoy", "").trim();
+    }
+    const todayStr = format(new Date(), "yyyy-MM-dd");
+    const meetis = await db.query.meetiLocations.findMany({
+      where: {
+        ...(isToday && { meeti: { date: { eq: todayStr } } }),
+        meeti: { virtual: false },
+        AND: [
+          ...(cleanQuery
+            ? [
+                {
+                  OR: [
+                    { meeti: { title: { ilike: `%${cleanQuery}%` } } },
+                    { meeti: { details: { ilike: `%${cleanQuery}%` } } },
+                    {},
+                  ],
+                },
+              ]
+            : []),
+
+          ...(city
+            ? [
+                {
+                  city: { ilike: `%${city}%` },
+                },
+              ]
+            : []),
+          ...(country
+            ? [
+                {
+                  country: { ilike: `%${country}%` },
+                },
+              ]
+            : []),
+        ],
+      },
+      limit: 5,
+      with: {
+        meeti: true,
+      },
+    });
+    return meetis.map((meeti) => meeti.meeti);
   }
 }
 
